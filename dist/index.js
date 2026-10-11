@@ -27,5 +27,6 @@ __exportStar(require("./enums"), exports);
 __exportStar(require("./common"), exports);
 __exportStar(require("./resource"), exports);
 __exportStar(require("./user"), exports);
+__exportStar(require("./pipeline"), exports);
 // 契约版本号，便于两端排查不一致
 exports.CONTRACTS_VERSION = '0.1.0';

@@ -10,4 +10,5 @@ export * from './enums';
 export * from './common';
 export * from './resource';
 export * from './user';
+export * from './pipeline';
 export declare const CONTRACTS_VERSION = "0.1.0";

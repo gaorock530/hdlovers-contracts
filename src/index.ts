@@ -10,6 +10,7 @@ export * from './enums';
 export * from './common';
 export * from './resource';
 export * from './user';
+export * from './pipeline';
 
 // 契约版本号，便于两端排查不一致
 export const CONTRACTS_VERSION = '0.1.0';
