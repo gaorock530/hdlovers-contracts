@@ -1,0 +1,27 @@
+{
+  "name": "@hdlovers/contracts",
+  "version": "0.1.0",
+  "description": "HDlovers API contracts (zod schemas + inferred types) shared by backend and frontend",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc"
+  },
+  "keywords": [
+    "hdlovers",
+    "api",
+    "contract",
+    "zod"
+  ],
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.4"
+  }
+}
