@@ -1,6 +1,6 @@
 /**
- * 抓取流水线相关契约：Cookie 凭证管理（P1）。
- * 运行/任务/Worker 契约在后续阶段补充。
+ * 抓取流水线相关契约：Cookie 凭证管理（P1）+ 运行编排（P2）。
+ * Worker 配对/心跳契约在 P3 补充。
  */
 import { z } from 'zod';
 
@@ -69,3 +69,156 @@ export const CookieTestResultSchema = z.object({
   testedAt: z.string(),
 });
 export type CookieTestResult = z.infer<typeof CookieTestResultSchema>;
+
+// ─────────────────────────────────────────────────────────────────
+// P2：运行编排（Orchestrator / 控制台）
+// ─────────────────────────────────────────────────────────────────
+
+/** 流水线阶段（对应 Python pipeline s1~s9） */
+export const ScrapeStageSchema = z.enum(['s1', 's2', 's3', 's4', 's5', 's6', 's7', 's8', 's9']);
+export type ScrapeStage = z.infer<typeof ScrapeStageSchema>;
+
+/** 云端执行阶段（spawn Python 子进程，无大流量） */
+export const CLOUD_STAGES: readonly ScrapeStage[] = ['s1', 's2', 's3', 's9'] as const;
+/** 本地执行器阶段（P3 起 Worker 认领，s4~s8 有大流量/磁盘占用） */
+export const WORKER_STAGES: readonly ScrapeStage[] = ['s4', 's5', 's6', 's7', 's8'] as const;
+
+export const isCloudStage = (s: ScrapeStage): boolean => (CLOUD_STAGES as readonly string[]).includes(s);
+export const isWorkerStage = (s: ScrapeStage): boolean => (WORKER_STAGES as readonly string[]).includes(s);
+
+/** 运行状态 */
+export const RunStatusSchema = z.enum(['running', 'pausing', 'paused', 'stopping', 'stopped', 'done', 'failed']);
+export type RunStatus = z.infer<typeof RunStatusSchema>;
+
+/** 任务（资源 × 执行单元）状态 */
+export const JobStatusSchema = z.enum([
+  'queued',
+  'claimed',
+  'running',
+  'paused',
+  'interrupted',
+  'done',
+  'failed',
+  'canceled',
+]);
+export type JobStatus = z.infer<typeof JobStatusSchema>;
+
+/** 创建运行请求体 */
+export const CreateRunBodySchema = z
+  .object({
+    siteCode: CookieSiteCodeSchema,
+    stages: z.array(ScrapeStageSchema).min(1),
+    /** 每阶段最多处理条数，0 = 不限 */
+    limit: z.number().int().min(0).max(500),
+    options: z
+      .object({
+        dryRun: z.boolean().optional(),
+      })
+      .passthrough()
+      .optional(),
+  })
+  .passthrough();
+export type CreateRunBody = z.infer<typeof CreateRunBodySchema>;
+
+/** 运行（一次控制台启动 = 一条） */
+export const ScrapeRunSchema = z
+  .object({
+    runId: z.string(),
+    siteCode: CookieSiteCodeSchema,
+    stages: z.array(ScrapeStageSchema),
+    limit: z.number().int(),
+    options: z.record(z.any()).optional(),
+    status: RunStatusSchema,
+    mode: z.enum(['batch', 'manual']).optional(),
+    batchId: z.string().nullable().optional(),
+    total: z.number().int().nullable().optional(),
+    succeeded: z.number().int(),
+    failed: z.number().int(),
+    skipped: z.number().int(),
+    /** 当前正在执行的云端阶段 */
+    currentStage: z.string().nullable().optional(),
+    startedAt: z.string().nullable().optional(),
+    finishedAt: z.string().nullable().optional(),
+    createdBy: z.string().nullable().optional(),
+    createdAt: z.string().optional(),
+    updatedAt: z.string().optional(),
+  })
+  .passthrough();
+export type ScrapeRun = z.infer<typeof ScrapeRunSchema>;
+
+/** 单资源任务（云端阶段仅做记录，Worker 阶段等待认领） */
+export const ScrapeJobSchema = z
+  .object({
+    id: z.string(),
+    runId: z.string(),
+    resourceId: z.string(),
+    stage: ScrapeStageSchema,
+    /** 'cloud' | 'worker:<workerId>' */
+    target: z.string(),
+    status: JobStatusSchema,
+    progress: z.number().min(0).max(1).nullable().optional(),
+    speed: z.string().nullable().optional(),
+    etaSec: z.number().int().nullable().optional(),
+    attempts: z.number().int(),
+    maxAttempts: z.number().int(),
+    error: z
+      .object({
+        type: z.string().optional(),
+        message: z.string().optional(),
+        ts: z.string().optional(),
+      })
+      .nullable()
+      .optional(),
+    heartbeatAt: z.string().nullable().optional(),
+    createdAt: z.string().optional(),
+    updatedAt: z.string().optional(),
+  })
+  .passthrough();
+export type ScrapeJob = z.infer<typeof ScrapeJobSchema>;
+
+/** 事件/日志（pipeline_events，TTL 14 天） */
+export const PipelineEventSchema = z
+  .object({
+    id: z.string().optional(),
+    runId: z.string(),
+    ts: z.string(),
+    level: z.enum(['debug', 'info', 'warn', 'error', 'success']),
+    /** 'cloud' | workerId */
+    source: z.string(),
+    stage: z.string().nullable().optional(),
+    message: z.string(),
+    meta: z.record(z.any()).nullable().optional(),
+  })
+  .passthrough();
+export type PipelineEvent = z.infer<typeof PipelineEventSchema>;
+
+/** 全局看板汇总 */
+export const ScrapeStatusSchema = z
+  .object({
+    activeRun: ScrapeRunSchema.nullable().optional(),
+    recentRuns: z.array(ScrapeRunSchema),
+    backlog: z.array(
+      z.object({
+        stage: z.string(),
+        count: z.number().int(),
+        errors: z.number().int(),
+      }),
+    ),
+    queuedJobs: z.number().int(),
+    invalidCookies: z.array(
+      z.object({
+        siteCode: CookieSiteCodeSchema,
+        label: z.string(),
+        status: z.string(),
+      }),
+    ),
+  })
+  .passthrough();
+export type ScrapeStatus = z.infer<typeof ScrapeStatusSchema>;
+
+/** SSE 一次性令牌（EventSource 无法携带自定义头，用短时 token 鉴权） */
+export const SseTokenSchema = z.object({
+  token: z.string(),
+  sid: z.string(),
+});
+export type SseToken = z.infer<typeof SseTokenSchema>;
