@@ -824,3 +824,425 @@ export declare const SseTokenSchema: z.ZodObject<{
     sid: string;
 }>;
 export type SseToken = z.infer<typeof SseTokenSchema>;
+/** 资源分类（对应站点栏目路径） */
+export declare const ResourceCategorySchema: z.ZodEnum<["bluray", "dvd", "hd", "concert", "hires"]>;
+export type ResourceCategory = z.infer<typeof ResourceCategorySchema>;
+/** 分类 → 站点栏目路径 */
+export declare const RESOURCE_CATEGORY_FILE: Record<ResourceCategory, string>;
+/** 资源生命周期阶段值（与 Python `Stage` 一致，大写） */
+export declare const ResourceStageSchema: z.ZodEnum<["SCRAPED", "IMAGES_OK", "PAN_OK", "DOWNLOADED", "EXTRACTED", "CLEANED", "COMPRESSED", "UPLOADED", "SHARED"]>;
+export type ResourceStage = z.infer<typeof ResourceStageSchema>;
+/** 资源列表项 DTO */
+export declare const ScrapeResourceSchema: z.ZodObject<{
+    /** 资源文档 `_id` 字符串 */
+    id: z.ZodString;
+    title: z.ZodOptional<z.ZodString>;
+    type: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    category: z.ZodOptional<z.ZodNullable<z.ZodEnum<["bluray", "dvd", "hd", "concert", "hires"]>>>;
+    /** 最后完成的阶段 */
+    stage: z.ZodEnum<["SCRAPED", "IMAGES_OK", "PAN_OK", "DOWNLOADED", "EXTRACTED", "CLEANED", "COMPRESSED", "UPLOADED", "SHARED"]>;
+    stageUpdatedAt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    /** 失败信息（`pipeline_error`） */
+    error: z.ZodOptional<z.ZodNullable<z.ZodObject<{
+        stage: z.ZodEnum<["SCRAPED", "IMAGES_OK", "PAN_OK", "DOWNLOADED", "EXTRACTED", "CLEANED", "COMPRESSED", "UPLOADED", "SHARED"]>;
+        reason: z.ZodString;
+        ts: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    }, "strip", z.ZodTypeAny, {
+        stage: "SCRAPED" | "IMAGES_OK" | "PAN_OK" | "DOWNLOADED" | "EXTRACTED" | "CLEANED" | "COMPRESSED" | "UPLOADED" | "SHARED";
+        reason: string;
+        ts?: string | null | undefined;
+    }, {
+        stage: "SCRAPED" | "IMAGES_OK" | "PAN_OK" | "DOWNLOADED" | "EXTRACTED" | "CLEANED" | "COMPRESSED" | "UPLOADED" | "SHARED";
+        reason: string;
+        ts?: string | null | undefined;
+    }>>>;
+    batchId: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    originalUrl: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    createdAt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+}, "passthrough", z.ZodTypeAny, z.objectOutputType<{
+    /** 资源文档 `_id` 字符串 */
+    id: z.ZodString;
+    title: z.ZodOptional<z.ZodString>;
+    type: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    category: z.ZodOptional<z.ZodNullable<z.ZodEnum<["bluray", "dvd", "hd", "concert", "hires"]>>>;
+    /** 最后完成的阶段 */
+    stage: z.ZodEnum<["SCRAPED", "IMAGES_OK", "PAN_OK", "DOWNLOADED", "EXTRACTED", "CLEANED", "COMPRESSED", "UPLOADED", "SHARED"]>;
+    stageUpdatedAt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    /** 失败信息（`pipeline_error`） */
+    error: z.ZodOptional<z.ZodNullable<z.ZodObject<{
+        stage: z.ZodEnum<["SCRAPED", "IMAGES_OK", "PAN_OK", "DOWNLOADED", "EXTRACTED", "CLEANED", "COMPRESSED", "UPLOADED", "SHARED"]>;
+        reason: z.ZodString;
+        ts: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    }, "strip", z.ZodTypeAny, {
+        stage: "SCRAPED" | "IMAGES_OK" | "PAN_OK" | "DOWNLOADED" | "EXTRACTED" | "CLEANED" | "COMPRESSED" | "UPLOADED" | "SHARED";
+        reason: string;
+        ts?: string | null | undefined;
+    }, {
+        stage: "SCRAPED" | "IMAGES_OK" | "PAN_OK" | "DOWNLOADED" | "EXTRACTED" | "CLEANED" | "COMPRESSED" | "UPLOADED" | "SHARED";
+        reason: string;
+        ts?: string | null | undefined;
+    }>>>;
+    batchId: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    originalUrl: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    createdAt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+}, z.ZodTypeAny, "passthrough">, z.objectInputType<{
+    /** 资源文档 `_id` 字符串 */
+    id: z.ZodString;
+    title: z.ZodOptional<z.ZodString>;
+    type: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    category: z.ZodOptional<z.ZodNullable<z.ZodEnum<["bluray", "dvd", "hd", "concert", "hires"]>>>;
+    /** 最后完成的阶段 */
+    stage: z.ZodEnum<["SCRAPED", "IMAGES_OK", "PAN_OK", "DOWNLOADED", "EXTRACTED", "CLEANED", "COMPRESSED", "UPLOADED", "SHARED"]>;
+    stageUpdatedAt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    /** 失败信息（`pipeline_error`） */
+    error: z.ZodOptional<z.ZodNullable<z.ZodObject<{
+        stage: z.ZodEnum<["SCRAPED", "IMAGES_OK", "PAN_OK", "DOWNLOADED", "EXTRACTED", "CLEANED", "COMPRESSED", "UPLOADED", "SHARED"]>;
+        reason: z.ZodString;
+        ts: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    }, "strip", z.ZodTypeAny, {
+        stage: "SCRAPED" | "IMAGES_OK" | "PAN_OK" | "DOWNLOADED" | "EXTRACTED" | "CLEANED" | "COMPRESSED" | "UPLOADED" | "SHARED";
+        reason: string;
+        ts?: string | null | undefined;
+    }, {
+        stage: "SCRAPED" | "IMAGES_OK" | "PAN_OK" | "DOWNLOADED" | "EXTRACTED" | "CLEANED" | "COMPRESSED" | "UPLOADED" | "SHARED";
+        reason: string;
+        ts?: string | null | undefined;
+    }>>>;
+    batchId: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    originalUrl: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    createdAt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+}, z.ZodTypeAny, "passthrough">>;
+export type ScrapeResource = z.infer<typeof ScrapeResourceSchema>;
+/** 资源列表查询参数 */
+export declare const ListResourcesQuerySchema: z.ZodObject<{
+    p: z.ZodOptional<z.ZodNumber>;
+    size: z.ZodOptional<z.ZodNumber>;
+    stage: z.ZodOptional<z.ZodEnum<["SCRAPED", "IMAGES_OK", "PAN_OK", "DOWNLOADED", "EXTRACTED", "CLEANED", "COMPRESSED", "UPLOADED", "SHARED"]>>;
+    category: z.ZodOptional<z.ZodEnum<["bluray", "dvd", "hd", "concert", "hires"]>>;
+    /** 仅看失败资源 */
+    hasError: z.ZodOptional<z.ZodBoolean>;
+    /** 关键词（title / originalId / originalUrl） */
+    q: z.ZodOptional<z.ZodString>;
+    siteCode: z.ZodOptional<z.ZodEnum<["baidu_pan", "lgych"]>>;
+}, "passthrough", z.ZodTypeAny, z.objectOutputType<{
+    p: z.ZodOptional<z.ZodNumber>;
+    size: z.ZodOptional<z.ZodNumber>;
+    stage: z.ZodOptional<z.ZodEnum<["SCRAPED", "IMAGES_OK", "PAN_OK", "DOWNLOADED", "EXTRACTED", "CLEANED", "COMPRESSED", "UPLOADED", "SHARED"]>>;
+    category: z.ZodOptional<z.ZodEnum<["bluray", "dvd", "hd", "concert", "hires"]>>;
+    /** 仅看失败资源 */
+    hasError: z.ZodOptional<z.ZodBoolean>;
+    /** 关键词（title / originalId / originalUrl） */
+    q: z.ZodOptional<z.ZodString>;
+    siteCode: z.ZodOptional<z.ZodEnum<["baidu_pan", "lgych"]>>;
+}, z.ZodTypeAny, "passthrough">, z.objectInputType<{
+    p: z.ZodOptional<z.ZodNumber>;
+    size: z.ZodOptional<z.ZodNumber>;
+    stage: z.ZodOptional<z.ZodEnum<["SCRAPED", "IMAGES_OK", "PAN_OK", "DOWNLOADED", "EXTRACTED", "CLEANED", "COMPRESSED", "UPLOADED", "SHARED"]>>;
+    category: z.ZodOptional<z.ZodEnum<["bluray", "dvd", "hd", "concert", "hires"]>>;
+    /** 仅看失败资源 */
+    hasError: z.ZodOptional<z.ZodBoolean>;
+    /** 关键词（title / originalId / originalUrl） */
+    q: z.ZodOptional<z.ZodString>;
+    siteCode: z.ZodOptional<z.ZodEnum<["baidu_pan", "lgych"]>>;
+}, z.ZodTypeAny, "passthrough">>;
+export type ListResourcesQuery = z.infer<typeof ListResourcesQuerySchema>;
+/** 资源列表结果 */
+export declare const ListResourcesResultSchema: z.ZodObject<{
+    list: z.ZodArray<z.ZodObject<{
+        /** 资源文档 `_id` 字符串 */
+        id: z.ZodString;
+        title: z.ZodOptional<z.ZodString>;
+        type: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        category: z.ZodOptional<z.ZodNullable<z.ZodEnum<["bluray", "dvd", "hd", "concert", "hires"]>>>;
+        /** 最后完成的阶段 */
+        stage: z.ZodEnum<["SCRAPED", "IMAGES_OK", "PAN_OK", "DOWNLOADED", "EXTRACTED", "CLEANED", "COMPRESSED", "UPLOADED", "SHARED"]>;
+        stageUpdatedAt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        /** 失败信息（`pipeline_error`） */
+        error: z.ZodOptional<z.ZodNullable<z.ZodObject<{
+            stage: z.ZodEnum<["SCRAPED", "IMAGES_OK", "PAN_OK", "DOWNLOADED", "EXTRACTED", "CLEANED", "COMPRESSED", "UPLOADED", "SHARED"]>;
+            reason: z.ZodString;
+            ts: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        }, "strip", z.ZodTypeAny, {
+            stage: "SCRAPED" | "IMAGES_OK" | "PAN_OK" | "DOWNLOADED" | "EXTRACTED" | "CLEANED" | "COMPRESSED" | "UPLOADED" | "SHARED";
+            reason: string;
+            ts?: string | null | undefined;
+        }, {
+            stage: "SCRAPED" | "IMAGES_OK" | "PAN_OK" | "DOWNLOADED" | "EXTRACTED" | "CLEANED" | "COMPRESSED" | "UPLOADED" | "SHARED";
+            reason: string;
+            ts?: string | null | undefined;
+        }>>>;
+        batchId: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        originalUrl: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        createdAt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    }, "passthrough", z.ZodTypeAny, z.objectOutputType<{
+        /** 资源文档 `_id` 字符串 */
+        id: z.ZodString;
+        title: z.ZodOptional<z.ZodString>;
+        type: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        category: z.ZodOptional<z.ZodNullable<z.ZodEnum<["bluray", "dvd", "hd", "concert", "hires"]>>>;
+        /** 最后完成的阶段 */
+        stage: z.ZodEnum<["SCRAPED", "IMAGES_OK", "PAN_OK", "DOWNLOADED", "EXTRACTED", "CLEANED", "COMPRESSED", "UPLOADED", "SHARED"]>;
+        stageUpdatedAt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        /** 失败信息（`pipeline_error`） */
+        error: z.ZodOptional<z.ZodNullable<z.ZodObject<{
+            stage: z.ZodEnum<["SCRAPED", "IMAGES_OK", "PAN_OK", "DOWNLOADED", "EXTRACTED", "CLEANED", "COMPRESSED", "UPLOADED", "SHARED"]>;
+            reason: z.ZodString;
+            ts: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        }, "strip", z.ZodTypeAny, {
+            stage: "SCRAPED" | "IMAGES_OK" | "PAN_OK" | "DOWNLOADED" | "EXTRACTED" | "CLEANED" | "COMPRESSED" | "UPLOADED" | "SHARED";
+            reason: string;
+            ts?: string | null | undefined;
+        }, {
+            stage: "SCRAPED" | "IMAGES_OK" | "PAN_OK" | "DOWNLOADED" | "EXTRACTED" | "CLEANED" | "COMPRESSED" | "UPLOADED" | "SHARED";
+            reason: string;
+            ts?: string | null | undefined;
+        }>>>;
+        batchId: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        originalUrl: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        createdAt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    }, z.ZodTypeAny, "passthrough">, z.objectInputType<{
+        /** 资源文档 `_id` 字符串 */
+        id: z.ZodString;
+        title: z.ZodOptional<z.ZodString>;
+        type: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        category: z.ZodOptional<z.ZodNullable<z.ZodEnum<["bluray", "dvd", "hd", "concert", "hires"]>>>;
+        /** 最后完成的阶段 */
+        stage: z.ZodEnum<["SCRAPED", "IMAGES_OK", "PAN_OK", "DOWNLOADED", "EXTRACTED", "CLEANED", "COMPRESSED", "UPLOADED", "SHARED"]>;
+        stageUpdatedAt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        /** 失败信息（`pipeline_error`） */
+        error: z.ZodOptional<z.ZodNullable<z.ZodObject<{
+            stage: z.ZodEnum<["SCRAPED", "IMAGES_OK", "PAN_OK", "DOWNLOADED", "EXTRACTED", "CLEANED", "COMPRESSED", "UPLOADED", "SHARED"]>;
+            reason: z.ZodString;
+            ts: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        }, "strip", z.ZodTypeAny, {
+            stage: "SCRAPED" | "IMAGES_OK" | "PAN_OK" | "DOWNLOADED" | "EXTRACTED" | "CLEANED" | "COMPRESSED" | "UPLOADED" | "SHARED";
+            reason: string;
+            ts?: string | null | undefined;
+        }, {
+            stage: "SCRAPED" | "IMAGES_OK" | "PAN_OK" | "DOWNLOADED" | "EXTRACTED" | "CLEANED" | "COMPRESSED" | "UPLOADED" | "SHARED";
+            reason: string;
+            ts?: string | null | undefined;
+        }>>>;
+        batchId: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        originalUrl: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        createdAt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    }, z.ZodTypeAny, "passthrough">>, "many">;
+    total: z.ZodNumber;
+    page: z.ZodNumber;
+    size: z.ZodNumber;
+}, "passthrough", z.ZodTypeAny, z.objectOutputType<{
+    list: z.ZodArray<z.ZodObject<{
+        /** 资源文档 `_id` 字符串 */
+        id: z.ZodString;
+        title: z.ZodOptional<z.ZodString>;
+        type: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        category: z.ZodOptional<z.ZodNullable<z.ZodEnum<["bluray", "dvd", "hd", "concert", "hires"]>>>;
+        /** 最后完成的阶段 */
+        stage: z.ZodEnum<["SCRAPED", "IMAGES_OK", "PAN_OK", "DOWNLOADED", "EXTRACTED", "CLEANED", "COMPRESSED", "UPLOADED", "SHARED"]>;
+        stageUpdatedAt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        /** 失败信息（`pipeline_error`） */
+        error: z.ZodOptional<z.ZodNullable<z.ZodObject<{
+            stage: z.ZodEnum<["SCRAPED", "IMAGES_OK", "PAN_OK", "DOWNLOADED", "EXTRACTED", "CLEANED", "COMPRESSED", "UPLOADED", "SHARED"]>;
+            reason: z.ZodString;
+            ts: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        }, "strip", z.ZodTypeAny, {
+            stage: "SCRAPED" | "IMAGES_OK" | "PAN_OK" | "DOWNLOADED" | "EXTRACTED" | "CLEANED" | "COMPRESSED" | "UPLOADED" | "SHARED";
+            reason: string;
+            ts?: string | null | undefined;
+        }, {
+            stage: "SCRAPED" | "IMAGES_OK" | "PAN_OK" | "DOWNLOADED" | "EXTRACTED" | "CLEANED" | "COMPRESSED" | "UPLOADED" | "SHARED";
+            reason: string;
+            ts?: string | null | undefined;
+        }>>>;
+        batchId: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        originalUrl: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        createdAt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    }, "passthrough", z.ZodTypeAny, z.objectOutputType<{
+        /** 资源文档 `_id` 字符串 */
+        id: z.ZodString;
+        title: z.ZodOptional<z.ZodString>;
+        type: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        category: z.ZodOptional<z.ZodNullable<z.ZodEnum<["bluray", "dvd", "hd", "concert", "hires"]>>>;
+        /** 最后完成的阶段 */
+        stage: z.ZodEnum<["SCRAPED", "IMAGES_OK", "PAN_OK", "DOWNLOADED", "EXTRACTED", "CLEANED", "COMPRESSED", "UPLOADED", "SHARED"]>;
+        stageUpdatedAt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        /** 失败信息（`pipeline_error`） */
+        error: z.ZodOptional<z.ZodNullable<z.ZodObject<{
+            stage: z.ZodEnum<["SCRAPED", "IMAGES_OK", "PAN_OK", "DOWNLOADED", "EXTRACTED", "CLEANED", "COMPRESSED", "UPLOADED", "SHARED"]>;
+            reason: z.ZodString;
+            ts: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        }, "strip", z.ZodTypeAny, {
+            stage: "SCRAPED" | "IMAGES_OK" | "PAN_OK" | "DOWNLOADED" | "EXTRACTED" | "CLEANED" | "COMPRESSED" | "UPLOADED" | "SHARED";
+            reason: string;
+            ts?: string | null | undefined;
+        }, {
+            stage: "SCRAPED" | "IMAGES_OK" | "PAN_OK" | "DOWNLOADED" | "EXTRACTED" | "CLEANED" | "COMPRESSED" | "UPLOADED" | "SHARED";
+            reason: string;
+            ts?: string | null | undefined;
+        }>>>;
+        batchId: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        originalUrl: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        createdAt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    }, z.ZodTypeAny, "passthrough">, z.objectInputType<{
+        /** 资源文档 `_id` 字符串 */
+        id: z.ZodString;
+        title: z.ZodOptional<z.ZodString>;
+        type: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        category: z.ZodOptional<z.ZodNullable<z.ZodEnum<["bluray", "dvd", "hd", "concert", "hires"]>>>;
+        /** 最后完成的阶段 */
+        stage: z.ZodEnum<["SCRAPED", "IMAGES_OK", "PAN_OK", "DOWNLOADED", "EXTRACTED", "CLEANED", "COMPRESSED", "UPLOADED", "SHARED"]>;
+        stageUpdatedAt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        /** 失败信息（`pipeline_error`） */
+        error: z.ZodOptional<z.ZodNullable<z.ZodObject<{
+            stage: z.ZodEnum<["SCRAPED", "IMAGES_OK", "PAN_OK", "DOWNLOADED", "EXTRACTED", "CLEANED", "COMPRESSED", "UPLOADED", "SHARED"]>;
+            reason: z.ZodString;
+            ts: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        }, "strip", z.ZodTypeAny, {
+            stage: "SCRAPED" | "IMAGES_OK" | "PAN_OK" | "DOWNLOADED" | "EXTRACTED" | "CLEANED" | "COMPRESSED" | "UPLOADED" | "SHARED";
+            reason: string;
+            ts?: string | null | undefined;
+        }, {
+            stage: "SCRAPED" | "IMAGES_OK" | "PAN_OK" | "DOWNLOADED" | "EXTRACTED" | "CLEANED" | "COMPRESSED" | "UPLOADED" | "SHARED";
+            reason: string;
+            ts?: string | null | undefined;
+        }>>>;
+        batchId: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        originalUrl: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        createdAt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    }, z.ZodTypeAny, "passthrough">>, "many">;
+    total: z.ZodNumber;
+    page: z.ZodNumber;
+    size: z.ZodNumber;
+}, z.ZodTypeAny, "passthrough">, z.objectInputType<{
+    list: z.ZodArray<z.ZodObject<{
+        /** 资源文档 `_id` 字符串 */
+        id: z.ZodString;
+        title: z.ZodOptional<z.ZodString>;
+        type: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        category: z.ZodOptional<z.ZodNullable<z.ZodEnum<["bluray", "dvd", "hd", "concert", "hires"]>>>;
+        /** 最后完成的阶段 */
+        stage: z.ZodEnum<["SCRAPED", "IMAGES_OK", "PAN_OK", "DOWNLOADED", "EXTRACTED", "CLEANED", "COMPRESSED", "UPLOADED", "SHARED"]>;
+        stageUpdatedAt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        /** 失败信息（`pipeline_error`） */
+        error: z.ZodOptional<z.ZodNullable<z.ZodObject<{
+            stage: z.ZodEnum<["SCRAPED", "IMAGES_OK", "PAN_OK", "DOWNLOADED", "EXTRACTED", "CLEANED", "COMPRESSED", "UPLOADED", "SHARED"]>;
+            reason: z.ZodString;
+            ts: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        }, "strip", z.ZodTypeAny, {
+            stage: "SCRAPED" | "IMAGES_OK" | "PAN_OK" | "DOWNLOADED" | "EXTRACTED" | "CLEANED" | "COMPRESSED" | "UPLOADED" | "SHARED";
+            reason: string;
+            ts?: string | null | undefined;
+        }, {
+            stage: "SCRAPED" | "IMAGES_OK" | "PAN_OK" | "DOWNLOADED" | "EXTRACTED" | "CLEANED" | "COMPRESSED" | "UPLOADED" | "SHARED";
+            reason: string;
+            ts?: string | null | undefined;
+        }>>>;
+        batchId: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        originalUrl: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        createdAt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    }, "passthrough", z.ZodTypeAny, z.objectOutputType<{
+        /** 资源文档 `_id` 字符串 */
+        id: z.ZodString;
+        title: z.ZodOptional<z.ZodString>;
+        type: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        category: z.ZodOptional<z.ZodNullable<z.ZodEnum<["bluray", "dvd", "hd", "concert", "hires"]>>>;
+        /** 最后完成的阶段 */
+        stage: z.ZodEnum<["SCRAPED", "IMAGES_OK", "PAN_OK", "DOWNLOADED", "EXTRACTED", "CLEANED", "COMPRESSED", "UPLOADED", "SHARED"]>;
+        stageUpdatedAt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        /** 失败信息（`pipeline_error`） */
+        error: z.ZodOptional<z.ZodNullable<z.ZodObject<{
+            stage: z.ZodEnum<["SCRAPED", "IMAGES_OK", "PAN_OK", "DOWNLOADED", "EXTRACTED", "CLEANED", "COMPRESSED", "UPLOADED", "SHARED"]>;
+            reason: z.ZodString;
+            ts: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        }, "strip", z.ZodTypeAny, {
+            stage: "SCRAPED" | "IMAGES_OK" | "PAN_OK" | "DOWNLOADED" | "EXTRACTED" | "CLEANED" | "COMPRESSED" | "UPLOADED" | "SHARED";
+            reason: string;
+            ts?: string | null | undefined;
+        }, {
+            stage: "SCRAPED" | "IMAGES_OK" | "PAN_OK" | "DOWNLOADED" | "EXTRACTED" | "CLEANED" | "COMPRESSED" | "UPLOADED" | "SHARED";
+            reason: string;
+            ts?: string | null | undefined;
+        }>>>;
+        batchId: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        originalUrl: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        createdAt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    }, z.ZodTypeAny, "passthrough">, z.objectInputType<{
+        /** 资源文档 `_id` 字符串 */
+        id: z.ZodString;
+        title: z.ZodOptional<z.ZodString>;
+        type: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        category: z.ZodOptional<z.ZodNullable<z.ZodEnum<["bluray", "dvd", "hd", "concert", "hires"]>>>;
+        /** 最后完成的阶段 */
+        stage: z.ZodEnum<["SCRAPED", "IMAGES_OK", "PAN_OK", "DOWNLOADED", "EXTRACTED", "CLEANED", "COMPRESSED", "UPLOADED", "SHARED"]>;
+        stageUpdatedAt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        /** 失败信息（`pipeline_error`） */
+        error: z.ZodOptional<z.ZodNullable<z.ZodObject<{
+            stage: z.ZodEnum<["SCRAPED", "IMAGES_OK", "PAN_OK", "DOWNLOADED", "EXTRACTED", "CLEANED", "COMPRESSED", "UPLOADED", "SHARED"]>;
+            reason: z.ZodString;
+            ts: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        }, "strip", z.ZodTypeAny, {
+            stage: "SCRAPED" | "IMAGES_OK" | "PAN_OK" | "DOWNLOADED" | "EXTRACTED" | "CLEANED" | "COMPRESSED" | "UPLOADED" | "SHARED";
+            reason: string;
+            ts?: string | null | undefined;
+        }, {
+            stage: "SCRAPED" | "IMAGES_OK" | "PAN_OK" | "DOWNLOADED" | "EXTRACTED" | "CLEANED" | "COMPRESSED" | "UPLOADED" | "SHARED";
+            reason: string;
+            ts?: string | null | undefined;
+        }>>>;
+        batchId: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        originalUrl: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        createdAt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    }, z.ZodTypeAny, "passthrough">>, "many">;
+    total: z.ZodNumber;
+    page: z.ZodNumber;
+    size: z.ZodNumber;
+}, z.ZodTypeAny, "passthrough">>;
+export type ListResourcesResult = z.infer<typeof ListResourcesResultSchema>;
+/** 单资源重试请求体（不传 fromStage 时自动取失败/当前阶段） */
+export declare const RetryResourceBodySchema: z.ZodObject<{
+    fromStage: z.ZodOptional<z.ZodEnum<["s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8", "s9"]>>;
+}, "passthrough", z.ZodTypeAny, z.objectOutputType<{
+    fromStage: z.ZodOptional<z.ZodEnum<["s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8", "s9"]>>;
+}, z.ZodTypeAny, "passthrough">, z.objectInputType<{
+    fromStage: z.ZodOptional<z.ZodEnum<["s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8", "s9"]>>;
+}, z.ZodTypeAny, "passthrough">>;
+export type RetryResourceBody = z.infer<typeof RetryResourceBodySchema>;
+/** 单资源重试结果 */
+export declare const RetryResourceResultSchema: z.ZodObject<{
+    ok: z.ZodBoolean;
+    resourceId: z.ZodString;
+    fromStage: z.ZodEnum<["s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8", "s9"]>;
+    /** cloud = 已 spawn 子进程；worker = 重新入队等待执行器认领 */
+    mode: z.ZodEnum<["cloud", "worker"]>;
+}, "passthrough", z.ZodTypeAny, z.objectOutputType<{
+    ok: z.ZodBoolean;
+    resourceId: z.ZodString;
+    fromStage: z.ZodEnum<["s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8", "s9"]>;
+    /** cloud = 已 spawn 子进程；worker = 重新入队等待执行器认领 */
+    mode: z.ZodEnum<["cloud", "worker"]>;
+}, z.ZodTypeAny, "passthrough">, z.objectInputType<{
+    ok: z.ZodBoolean;
+    resourceId: z.ZodString;
+    fromStage: z.ZodEnum<["s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8", "s9"]>;
+    /** cloud = 已 spawn 子进程；worker = 重新入队等待执行器认领 */
+    mode: z.ZodEnum<["cloud", "worker"]>;
+}, z.ZodTypeAny, "passthrough">>;
+export type RetryResourceResult = z.infer<typeof RetryResourceResultSchema>;
+/** 删除运行结果（只清理 run/job/event，不触碰资源） */
+export declare const DeleteRunResultSchema: z.ZodObject<{
+    ok: z.ZodBoolean;
+    runId: z.ZodString;
+    removedJobs: z.ZodNumber;
+    removedEvents: z.ZodNumber;
+}, "passthrough", z.ZodTypeAny, z.objectOutputType<{
+    ok: z.ZodBoolean;
+    runId: z.ZodString;
+    removedJobs: z.ZodNumber;
+    removedEvents: z.ZodNumber;
+}, z.ZodTypeAny, "passthrough">, z.objectInputType<{
+    ok: z.ZodBoolean;
+    runId: z.ZodString;
+    removedJobs: z.ZodNumber;
+    removedEvents: z.ZodNumber;
+}, z.ZodTypeAny, "passthrough">>;
+export type DeleteRunResult = z.infer<typeof DeleteRunResultSchema>;

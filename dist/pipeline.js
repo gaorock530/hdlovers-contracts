@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SseTokenSchema = exports.ScrapeStatusSchema = exports.PipelineEventSchema = exports.ScrapeJobSchema = exports.ScrapeRunSchema = exports.CreateRunBodySchema = exports.JobStatusSchema = exports.RunStatusSchema = exports.isWorkerStage = exports.isCloudStage = exports.WORKER_STAGES = exports.CLOUD_STAGES = exports.ScrapeStageSchema = exports.CookieTestResultSchema = exports.CookieParsePreviewSchema = exports.CookieUpsertBodySchema = exports.CookieSummarySchema = exports.CookieStatusSchema = exports.CookieSiteCodeSchema = void 0;
+exports.DeleteRunResultSchema = exports.RetryResourceResultSchema = exports.RetryResourceBodySchema = exports.ListResourcesResultSchema = exports.ListResourcesQuerySchema = exports.ScrapeResourceSchema = exports.ResourceStageSchema = exports.RESOURCE_CATEGORY_FILE = exports.ResourceCategorySchema = exports.SseTokenSchema = exports.ScrapeStatusSchema = exports.PipelineEventSchema = exports.ScrapeJobSchema = exports.ScrapeRunSchema = exports.CreateRunBodySchema = exports.JobStatusSchema = exports.RunStatusSchema = exports.isWorkerStage = exports.isCloudStage = exports.WORKER_STAGES = exports.CLOUD_STAGES = exports.ScrapeStageSchema = exports.CookieTestResultSchema = exports.CookieParsePreviewSchema = exports.CookieUpsertBodySchema = exports.CookieSummarySchema = exports.CookieStatusSchema = exports.CookieSiteCodeSchema = void 0;
 /**
  * 抓取流水线相关契约：Cookie 凭证管理（P1）+ 运行编排（P2）。
  * Worker 配对/心跳契约在 P3 补充。
@@ -190,3 +190,101 @@ exports.SseTokenSchema = zod_1.z.object({
     token: zod_1.z.string(),
     sid: zod_1.z.string(),
 });
+// ─────────────────────────────────────────────────────────────────
+// P3 前置：资源列表 / 分类 / 重试
+// ─────────────────────────────────────────────────────────────────
+/** 资源分类（对应站点栏目路径） */
+exports.ResourceCategorySchema = zod_1.z.enum(['bluray', 'dvd', 'hd', 'concert', 'hires']);
+/** 分类 → 站点栏目路径 */
+exports.RESOURCE_CATEGORY_FILE = {
+    bluray: '/bluray',
+    dvd: '/dvd',
+    hd: '/hd',
+    concert: '/concert',
+    hires: '/hires',
+};
+/** 资源生命周期阶段值（与 Python `Stage` 一致，大写） */
+exports.ResourceStageSchema = zod_1.z.enum([
+    'SCRAPED',
+    'IMAGES_OK',
+    'PAN_OK',
+    'DOWNLOADED',
+    'EXTRACTED',
+    'CLEANED',
+    'COMPRESSED',
+    'UPLOADED',
+    'SHARED',
+]);
+/** 资源列表项 DTO */
+exports.ScrapeResourceSchema = zod_1.z
+    .object({
+    /** 资源文档 `_id` 字符串 */
+    id: zod_1.z.string(),
+    title: zod_1.z.string().optional(),
+    type: zod_1.z.string().nullable().optional(),
+    category: exports.ResourceCategorySchema.nullable().optional(),
+    /** 最后完成的阶段 */
+    stage: exports.ResourceStageSchema,
+    stageUpdatedAt: zod_1.z.string().nullable().optional(),
+    /** 失败信息（`pipeline_error`） */
+    error: zod_1.z
+        .object({
+        stage: exports.ResourceStageSchema,
+        reason: zod_1.z.string(),
+        ts: zod_1.z.string().nullable().optional(),
+    })
+        .nullable()
+        .optional(),
+    batchId: zod_1.z.string().nullable().optional(),
+    originalUrl: zod_1.z.string().nullable().optional(),
+    createdAt: zod_1.z.string().nullable().optional(),
+})
+    .passthrough();
+/** 资源列表查询参数 */
+exports.ListResourcesQuerySchema = zod_1.z
+    .object({
+    p: zod_1.z.number().int().min(1).optional(),
+    size: zod_1.z.number().int().min(1).max(100).optional(),
+    stage: exports.ResourceStageSchema.optional(),
+    category: exports.ResourceCategorySchema.optional(),
+    /** 仅看失败资源 */
+    hasError: zod_1.z.boolean().optional(),
+    /** 关键词（title / originalId / originalUrl） */
+    q: zod_1.z.string().optional(),
+    siteCode: exports.CookieSiteCodeSchema.optional(),
+})
+    .passthrough();
+/** 资源列表结果 */
+exports.ListResourcesResultSchema = zod_1.z
+    .object({
+    list: zod_1.z.array(exports.ScrapeResourceSchema),
+    total: zod_1.z.number().int(),
+    page: zod_1.z.number().int(),
+    size: zod_1.z.number().int(),
+})
+    .passthrough();
+/** 单资源重试请求体（不传 fromStage 时自动取失败/当前阶段） */
+exports.RetryResourceBodySchema = zod_1.z
+    .object({
+    fromStage: exports.ScrapeStageSchema.optional(),
+})
+    .passthrough();
+/** 单资源重试结果 */
+exports.RetryResourceResultSchema = zod_1.z
+    .object({
+    ok: zod_1.z.boolean(),
+    resourceId: zod_1.z.string(),
+    fromStage: exports.ScrapeStageSchema,
+    /** cloud = 已 spawn 子进程；worker = 重新入队等待执行器认领 */
+    mode: zod_1.z.enum(['cloud', 'worker']),
+})
+    .passthrough();
+/** 删除运行结果（只清理 run/job/event，不触碰资源） */
+exports.DeleteRunResultSchema = zod_1.z
+    .object({
+    ok: zod_1.z.boolean(),
+    runId: zod_1.z.string(),
+    removedJobs: zod_1.z.number().int(),
+    removedEvents: zod_1.z.number().int(),
+})
+    .passthrough();

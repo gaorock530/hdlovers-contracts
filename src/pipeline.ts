@@ -222,3 +222,119 @@ export const SseTokenSchema = z.object({
   sid: z.string(),
 });
 export type SseToken = z.infer<typeof SseTokenSchema>;
+
+// ─────────────────────────────────────────────────────────────────
+// P3 前置：资源列表 / 分类 / 重试
+// ─────────────────────────────────────────────────────────────────
+
+/** 资源分类（对应站点栏目路径） */
+export const ResourceCategorySchema = z.enum(['bluray', 'dvd', 'hd', 'concert', 'hires']);
+export type ResourceCategory = z.infer<typeof ResourceCategorySchema>;
+
+/** 分类 → 站点栏目路径 */
+export const RESOURCE_CATEGORY_FILE: Record<ResourceCategory, string> = {
+  bluray: '/bluray',
+  dvd: '/dvd',
+  hd: '/hd',
+  concert: '/concert',
+  hires: '/hires',
+};
+
+/** 资源生命周期阶段值（与 Python `Stage` 一致，大写） */
+export const ResourceStageSchema = z.enum([
+  'SCRAPED',
+  'IMAGES_OK',
+  'PAN_OK',
+  'DOWNLOADED',
+  'EXTRACTED',
+  'CLEANED',
+  'COMPRESSED',
+  'UPLOADED',
+  'SHARED',
+]);
+export type ResourceStage = z.infer<typeof ResourceStageSchema>;
+
+/** 资源列表项 DTO */
+export const ScrapeResourceSchema = z
+  .object({
+    /** 资源文档 `_id` 字符串 */
+    id: z.string(),
+    title: z.string().optional(),
+    type: z.string().nullable().optional(),
+    category: ResourceCategorySchema.nullable().optional(),
+    /** 最后完成的阶段 */
+    stage: ResourceStageSchema,
+    stageUpdatedAt: z.string().nullable().optional(),
+    /** 失败信息（`pipeline_error`） */
+    error: z
+      .object({
+        stage: ResourceStageSchema,
+        reason: z.string(),
+        ts: z.string().nullable().optional(),
+      })
+      .nullable()
+      .optional(),
+    batchId: z.string().nullable().optional(),
+    originalUrl: z.string().nullable().optional(),
+    createdAt: z.string().nullable().optional(),
+  })
+  .passthrough();
+export type ScrapeResource = z.infer<typeof ScrapeResourceSchema>;
+
+/** 资源列表查询参数 */
+export const ListResourcesQuerySchema = z
+  .object({
+    p: z.number().int().min(1).optional(),
+    size: z.number().int().min(1).max(100).optional(),
+    stage: ResourceStageSchema.optional(),
+    category: ResourceCategorySchema.optional(),
+    /** 仅看失败资源 */
+    hasError: z.boolean().optional(),
+    /** 关键词（title / originalId / originalUrl） */
+    q: z.string().optional(),
+    siteCode: CookieSiteCodeSchema.optional(),
+  })
+  .passthrough();
+export type ListResourcesQuery = z.infer<typeof ListResourcesQuerySchema>;
+
+/** 资源列表结果 */
+export const ListResourcesResultSchema = z
+  .object({
+    list: z.array(ScrapeResourceSchema),
+    total: z.number().int(),
+    page: z.number().int(),
+    size: z.number().int(),
+  })
+  .passthrough();
+export type ListResourcesResult = z.infer<typeof ListResourcesResultSchema>;
+
+/** 单资源重试请求体（不传 fromStage 时自动取失败/当前阶段） */
+export const RetryResourceBodySchema = z
+  .object({
+    fromStage: ScrapeStageSchema.optional(),
+  })
+  .passthrough();
+export type RetryResourceBody = z.infer<typeof RetryResourceBodySchema>;
+
+/** 单资源重试结果 */
+export const RetryResourceResultSchema = z
+  .object({
+    ok: z.boolean(),
+    resourceId: z.string(),
+    fromStage: ScrapeStageSchema,
+    /** cloud = 已 spawn 子进程；worker = 重新入队等待执行器认领 */
+    mode: z.enum(['cloud', 'worker']),
+  })
+  .passthrough();
+export type RetryResourceResult = z.infer<typeof RetryResourceResultSchema>;
+
+/** 删除运行结果（只清理 run/job/event，不触碰资源） */
+export const DeleteRunResultSchema = z
+  .object({
+    ok: z.boolean(),
+    runId: z.string(),
+    removedJobs: z.number().int(),
+    removedEvents: z.number().int(),
+  })
+  .passthrough();
+export type DeleteRunResult = z.infer<typeof DeleteRunResultSchema>;
