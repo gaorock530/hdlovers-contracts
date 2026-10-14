@@ -834,11 +834,20 @@ export declare const ResourceStageSchema: z.ZodEnum<["SCRAPED", "IMAGES_OK", "PA
 export type ResourceStage = z.infer<typeof ResourceStageSchema>;
 /** 资源列表项 DTO */
 export declare const ScrapeResourceSchema: z.ZodObject<{
-    /** 资源文档 `_id` 字符串 */
+    /** 资源文档 `_id` 字符串（重试用） */
     id: z.ZodString;
+    /** 资源文档 uuid `id`（详情/编辑/删除/上线用，与「资源管理」一致） */
+    resourceId: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     title: z.ZodOptional<z.ZodString>;
     type: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     category: z.ZodOptional<z.ZodNullable<z.ZodEnum<["bluray", "dvd", "hd", "concert", "hires"]>>>;
+    region: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    format: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    quality: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    price: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+    downloadCount: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+    popularity: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+    publishedDate: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     /** 最后完成的阶段 */
     stage: z.ZodEnum<["SCRAPED", "IMAGES_OK", "PAN_OK", "DOWNLOADED", "EXTRACTED", "CLEANED", "COMPRESSED", "UPLOADED", "SHARED"]>;
     stageUpdatedAt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
@@ -860,11 +869,20 @@ export declare const ScrapeResourceSchema: z.ZodObject<{
     originalUrl: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     createdAt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
 }, "passthrough", z.ZodTypeAny, z.objectOutputType<{
-    /** 资源文档 `_id` 字符串 */
+    /** 资源文档 `_id` 字符串（重试用） */
     id: z.ZodString;
+    /** 资源文档 uuid `id`（详情/编辑/删除/上线用，与「资源管理」一致） */
+    resourceId: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     title: z.ZodOptional<z.ZodString>;
     type: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     category: z.ZodOptional<z.ZodNullable<z.ZodEnum<["bluray", "dvd", "hd", "concert", "hires"]>>>;
+    region: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    format: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    quality: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    price: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+    downloadCount: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+    popularity: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+    publishedDate: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     /** 最后完成的阶段 */
     stage: z.ZodEnum<["SCRAPED", "IMAGES_OK", "PAN_OK", "DOWNLOADED", "EXTRACTED", "CLEANED", "COMPRESSED", "UPLOADED", "SHARED"]>;
     stageUpdatedAt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
@@ -886,11 +904,20 @@ export declare const ScrapeResourceSchema: z.ZodObject<{
     originalUrl: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     createdAt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
 }, z.ZodTypeAny, "passthrough">, z.objectInputType<{
-    /** 资源文档 `_id` 字符串 */
+    /** 资源文档 `_id` 字符串（重试用） */
     id: z.ZodString;
+    /** 资源文档 uuid `id`（详情/编辑/删除/上线用，与「资源管理」一致） */
+    resourceId: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     title: z.ZodOptional<z.ZodString>;
     type: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     category: z.ZodOptional<z.ZodNullable<z.ZodEnum<["bluray", "dvd", "hd", "concert", "hires"]>>>;
+    region: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    format: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    quality: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    price: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+    downloadCount: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+    popularity: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+    publishedDate: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     /** 最后完成的阶段 */
     stage: z.ZodEnum<["SCRAPED", "IMAGES_OK", "PAN_OK", "DOWNLOADED", "EXTRACTED", "CLEANED", "COMPRESSED", "UPLOADED", "SHARED"]>;
     stageUpdatedAt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
@@ -949,11 +976,20 @@ export type ListResourcesQuery = z.infer<typeof ListResourcesQuerySchema>;
 /** 资源列表结果 */
 export declare const ListResourcesResultSchema: z.ZodObject<{
     list: z.ZodArray<z.ZodObject<{
-        /** 资源文档 `_id` 字符串 */
+        /** 资源文档 `_id` 字符串（重试用） */
         id: z.ZodString;
+        /** 资源文档 uuid `id`（详情/编辑/删除/上线用，与「资源管理」一致） */
+        resourceId: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         title: z.ZodOptional<z.ZodString>;
         type: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         category: z.ZodOptional<z.ZodNullable<z.ZodEnum<["bluray", "dvd", "hd", "concert", "hires"]>>>;
+        region: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        format: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        quality: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        price: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+        downloadCount: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+        popularity: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+        publishedDate: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         /** 最后完成的阶段 */
         stage: z.ZodEnum<["SCRAPED", "IMAGES_OK", "PAN_OK", "DOWNLOADED", "EXTRACTED", "CLEANED", "COMPRESSED", "UPLOADED", "SHARED"]>;
         stageUpdatedAt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
@@ -975,11 +1011,20 @@ export declare const ListResourcesResultSchema: z.ZodObject<{
         originalUrl: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         createdAt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     }, "passthrough", z.ZodTypeAny, z.objectOutputType<{
-        /** 资源文档 `_id` 字符串 */
+        /** 资源文档 `_id` 字符串（重试用） */
         id: z.ZodString;
+        /** 资源文档 uuid `id`（详情/编辑/删除/上线用，与「资源管理」一致） */
+        resourceId: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         title: z.ZodOptional<z.ZodString>;
         type: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         category: z.ZodOptional<z.ZodNullable<z.ZodEnum<["bluray", "dvd", "hd", "concert", "hires"]>>>;
+        region: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        format: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        quality: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        price: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+        downloadCount: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+        popularity: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+        publishedDate: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         /** 最后完成的阶段 */
         stage: z.ZodEnum<["SCRAPED", "IMAGES_OK", "PAN_OK", "DOWNLOADED", "EXTRACTED", "CLEANED", "COMPRESSED", "UPLOADED", "SHARED"]>;
         stageUpdatedAt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
@@ -1001,11 +1046,20 @@ export declare const ListResourcesResultSchema: z.ZodObject<{
         originalUrl: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         createdAt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     }, z.ZodTypeAny, "passthrough">, z.objectInputType<{
-        /** 资源文档 `_id` 字符串 */
+        /** 资源文档 `_id` 字符串（重试用） */
         id: z.ZodString;
+        /** 资源文档 uuid `id`（详情/编辑/删除/上线用，与「资源管理」一致） */
+        resourceId: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         title: z.ZodOptional<z.ZodString>;
         type: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         category: z.ZodOptional<z.ZodNullable<z.ZodEnum<["bluray", "dvd", "hd", "concert", "hires"]>>>;
+        region: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        format: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        quality: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        price: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+        downloadCount: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+        popularity: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+        publishedDate: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         /** 最后完成的阶段 */
         stage: z.ZodEnum<["SCRAPED", "IMAGES_OK", "PAN_OK", "DOWNLOADED", "EXTRACTED", "CLEANED", "COMPRESSED", "UPLOADED", "SHARED"]>;
         stageUpdatedAt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
@@ -1032,11 +1086,20 @@ export declare const ListResourcesResultSchema: z.ZodObject<{
     size: z.ZodNumber;
 }, "passthrough", z.ZodTypeAny, z.objectOutputType<{
     list: z.ZodArray<z.ZodObject<{
-        /** 资源文档 `_id` 字符串 */
+        /** 资源文档 `_id` 字符串（重试用） */
         id: z.ZodString;
+        /** 资源文档 uuid `id`（详情/编辑/删除/上线用，与「资源管理」一致） */
+        resourceId: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         title: z.ZodOptional<z.ZodString>;
         type: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         category: z.ZodOptional<z.ZodNullable<z.ZodEnum<["bluray", "dvd", "hd", "concert", "hires"]>>>;
+        region: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        format: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        quality: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        price: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+        downloadCount: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+        popularity: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+        publishedDate: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         /** 最后完成的阶段 */
         stage: z.ZodEnum<["SCRAPED", "IMAGES_OK", "PAN_OK", "DOWNLOADED", "EXTRACTED", "CLEANED", "COMPRESSED", "UPLOADED", "SHARED"]>;
         stageUpdatedAt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
@@ -1058,11 +1121,20 @@ export declare const ListResourcesResultSchema: z.ZodObject<{
         originalUrl: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         createdAt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     }, "passthrough", z.ZodTypeAny, z.objectOutputType<{
-        /** 资源文档 `_id` 字符串 */
+        /** 资源文档 `_id` 字符串（重试用） */
         id: z.ZodString;
+        /** 资源文档 uuid `id`（详情/编辑/删除/上线用，与「资源管理」一致） */
+        resourceId: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         title: z.ZodOptional<z.ZodString>;
         type: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         category: z.ZodOptional<z.ZodNullable<z.ZodEnum<["bluray", "dvd", "hd", "concert", "hires"]>>>;
+        region: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        format: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        quality: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        price: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+        downloadCount: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+        popularity: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+        publishedDate: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         /** 最后完成的阶段 */
         stage: z.ZodEnum<["SCRAPED", "IMAGES_OK", "PAN_OK", "DOWNLOADED", "EXTRACTED", "CLEANED", "COMPRESSED", "UPLOADED", "SHARED"]>;
         stageUpdatedAt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
@@ -1084,11 +1156,20 @@ export declare const ListResourcesResultSchema: z.ZodObject<{
         originalUrl: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         createdAt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     }, z.ZodTypeAny, "passthrough">, z.objectInputType<{
-        /** 资源文档 `_id` 字符串 */
+        /** 资源文档 `_id` 字符串（重试用） */
         id: z.ZodString;
+        /** 资源文档 uuid `id`（详情/编辑/删除/上线用，与「资源管理」一致） */
+        resourceId: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         title: z.ZodOptional<z.ZodString>;
         type: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         category: z.ZodOptional<z.ZodNullable<z.ZodEnum<["bluray", "dvd", "hd", "concert", "hires"]>>>;
+        region: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        format: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        quality: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        price: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+        downloadCount: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+        popularity: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+        publishedDate: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         /** 最后完成的阶段 */
         stage: z.ZodEnum<["SCRAPED", "IMAGES_OK", "PAN_OK", "DOWNLOADED", "EXTRACTED", "CLEANED", "COMPRESSED", "UPLOADED", "SHARED"]>;
         stageUpdatedAt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
@@ -1115,11 +1196,20 @@ export declare const ListResourcesResultSchema: z.ZodObject<{
     size: z.ZodNumber;
 }, z.ZodTypeAny, "passthrough">, z.objectInputType<{
     list: z.ZodArray<z.ZodObject<{
-        /** 资源文档 `_id` 字符串 */
+        /** 资源文档 `_id` 字符串（重试用） */
         id: z.ZodString;
+        /** 资源文档 uuid `id`（详情/编辑/删除/上线用，与「资源管理」一致） */
+        resourceId: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         title: z.ZodOptional<z.ZodString>;
         type: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         category: z.ZodOptional<z.ZodNullable<z.ZodEnum<["bluray", "dvd", "hd", "concert", "hires"]>>>;
+        region: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        format: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        quality: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        price: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+        downloadCount: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+        popularity: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+        publishedDate: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         /** 最后完成的阶段 */
         stage: z.ZodEnum<["SCRAPED", "IMAGES_OK", "PAN_OK", "DOWNLOADED", "EXTRACTED", "CLEANED", "COMPRESSED", "UPLOADED", "SHARED"]>;
         stageUpdatedAt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
@@ -1141,11 +1231,20 @@ export declare const ListResourcesResultSchema: z.ZodObject<{
         originalUrl: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         createdAt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     }, "passthrough", z.ZodTypeAny, z.objectOutputType<{
-        /** 资源文档 `_id` 字符串 */
+        /** 资源文档 `_id` 字符串（重试用） */
         id: z.ZodString;
+        /** 资源文档 uuid `id`（详情/编辑/删除/上线用，与「资源管理」一致） */
+        resourceId: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         title: z.ZodOptional<z.ZodString>;
         type: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         category: z.ZodOptional<z.ZodNullable<z.ZodEnum<["bluray", "dvd", "hd", "concert", "hires"]>>>;
+        region: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        format: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        quality: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        price: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+        downloadCount: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+        popularity: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+        publishedDate: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         /** 最后完成的阶段 */
         stage: z.ZodEnum<["SCRAPED", "IMAGES_OK", "PAN_OK", "DOWNLOADED", "EXTRACTED", "CLEANED", "COMPRESSED", "UPLOADED", "SHARED"]>;
         stageUpdatedAt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
@@ -1167,11 +1266,20 @@ export declare const ListResourcesResultSchema: z.ZodObject<{
         originalUrl: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         createdAt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     }, z.ZodTypeAny, "passthrough">, z.objectInputType<{
-        /** 资源文档 `_id` 字符串 */
+        /** 资源文档 `_id` 字符串（重试用） */
         id: z.ZodString;
+        /** 资源文档 uuid `id`（详情/编辑/删除/上线用，与「资源管理」一致） */
+        resourceId: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         title: z.ZodOptional<z.ZodString>;
         type: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         category: z.ZodOptional<z.ZodNullable<z.ZodEnum<["bluray", "dvd", "hd", "concert", "hires"]>>>;
+        region: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        format: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        quality: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        price: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+        downloadCount: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+        popularity: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+        publishedDate: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         /** 最后完成的阶段 */
         stage: z.ZodEnum<["SCRAPED", "IMAGES_OK", "PAN_OK", "DOWNLOADED", "EXTRACTED", "CLEANED", "COMPRESSED", "UPLOADED", "SHARED"]>;
         stageUpdatedAt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
@@ -1246,3 +1354,15 @@ export declare const DeleteRunResultSchema: z.ZodObject<{
     removedEvents: z.ZodNumber;
 }, z.ZodTypeAny, "passthrough">>;
 export type DeleteRunResult = z.infer<typeof DeleteRunResultSchema>;
+/** 审核通过并上线结果（解除 `newAdded`，资源对外可见） */
+export declare const PublishResourceResultSchema: z.ZodObject<{
+    ok: z.ZodBoolean;
+    resourceId: z.ZodString;
+}, "passthrough", z.ZodTypeAny, z.objectOutputType<{
+    ok: z.ZodBoolean;
+    resourceId: z.ZodString;
+}, z.ZodTypeAny, "passthrough">, z.objectInputType<{
+    ok: z.ZodBoolean;
+    resourceId: z.ZodString;
+}, z.ZodTypeAny, "passthrough">>;
+export type PublishResourceResult = z.infer<typeof PublishResourceResultSchema>;

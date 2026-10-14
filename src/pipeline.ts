@@ -257,11 +257,20 @@ export type ResourceStage = z.infer<typeof ResourceStageSchema>;
 /** 资源列表项 DTO */
 export const ScrapeResourceSchema = z
   .object({
-    /** 资源文档 `_id` 字符串 */
+    /** 资源文档 `_id` 字符串（重试用） */
     id: z.string(),
+    /** 资源文档 uuid `id`（详情/编辑/删除/上线用，与「资源管理」一致） */
+    resourceId: z.string().nullable().optional(),
     title: z.string().optional(),
     type: z.string().nullable().optional(),
     category: ResourceCategorySchema.nullable().optional(),
+    region: z.string().nullable().optional(),
+    format: z.string().nullable().optional(),
+    quality: z.string().nullable().optional(),
+    price: z.number().nullable().optional(),
+    downloadCount: z.number().nullable().optional(),
+    popularity: z.number().nullable().optional(),
+    publishedDate: z.string().nullable().optional(),
     /** 最后完成的阶段 */
     stage: ResourceStageSchema,
     stageUpdatedAt: z.string().nullable().optional(),
@@ -338,3 +347,12 @@ export const DeleteRunResultSchema = z
   })
   .passthrough();
 export type DeleteRunResult = z.infer<typeof DeleteRunResultSchema>;
+
+/** 审核通过并上线结果（解除 `newAdded`，资源对外可见） */
+export const PublishResourceResultSchema = z
+  .object({
+    ok: z.boolean(),
+    resourceId: z.string(),
+  })
+  .passthrough();
+export type PublishResourceResult = z.infer<typeof PublishResourceResultSchema>;

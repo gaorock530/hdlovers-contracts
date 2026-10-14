@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DeleteRunResultSchema = exports.RetryResourceResultSchema = exports.RetryResourceBodySchema = exports.ListResourcesResultSchema = exports.ListResourcesQuerySchema = exports.ScrapeResourceSchema = exports.ResourceStageSchema = exports.RESOURCE_CATEGORY_FILE = exports.ResourceCategorySchema = exports.SseTokenSchema = exports.ScrapeStatusSchema = exports.PipelineEventSchema = exports.ScrapeJobSchema = exports.ScrapeRunSchema = exports.CreateRunBodySchema = exports.JobStatusSchema = exports.RunStatusSchema = exports.isWorkerStage = exports.isCloudStage = exports.WORKER_STAGES = exports.CLOUD_STAGES = exports.ScrapeStageSchema = exports.CookieTestResultSchema = exports.CookieParsePreviewSchema = exports.CookieUpsertBodySchema = exports.CookieSummarySchema = exports.CookieStatusSchema = exports.CookieSiteCodeSchema = void 0;
+exports.PublishResourceResultSchema = exports.DeleteRunResultSchema = exports.RetryResourceResultSchema = exports.RetryResourceBodySchema = exports.ListResourcesResultSchema = exports.ListResourcesQuerySchema = exports.ScrapeResourceSchema = exports.ResourceStageSchema = exports.RESOURCE_CATEGORY_FILE = exports.ResourceCategorySchema = exports.SseTokenSchema = exports.ScrapeStatusSchema = exports.PipelineEventSchema = exports.ScrapeJobSchema = exports.ScrapeRunSchema = exports.CreateRunBodySchema = exports.JobStatusSchema = exports.RunStatusSchema = exports.isWorkerStage = exports.isCloudStage = exports.WORKER_STAGES = exports.CLOUD_STAGES = exports.ScrapeStageSchema = exports.CookieTestResultSchema = exports.CookieParsePreviewSchema = exports.CookieUpsertBodySchema = exports.CookieSummarySchema = exports.CookieStatusSchema = exports.CookieSiteCodeSchema = void 0;
 /**
  * 抓取流水线相关契约：Cookie 凭证管理（P1）+ 运行编排（P2）。
  * Worker 配对/心跳契约在 P3 补充。
@@ -218,11 +218,20 @@ exports.ResourceStageSchema = zod_1.z.enum([
 /** 资源列表项 DTO */
 exports.ScrapeResourceSchema = zod_1.z
     .object({
-    /** 资源文档 `_id` 字符串 */
+    /** 资源文档 `_id` 字符串（重试用） */
     id: zod_1.z.string(),
+    /** 资源文档 uuid `id`（详情/编辑/删除/上线用，与「资源管理」一致） */
+    resourceId: zod_1.z.string().nullable().optional(),
     title: zod_1.z.string().optional(),
     type: zod_1.z.string().nullable().optional(),
     category: exports.ResourceCategorySchema.nullable().optional(),
+    region: zod_1.z.string().nullable().optional(),
+    format: zod_1.z.string().nullable().optional(),
+    quality: zod_1.z.string().nullable().optional(),
+    price: zod_1.z.number().nullable().optional(),
+    downloadCount: zod_1.z.number().nullable().optional(),
+    popularity: zod_1.z.number().nullable().optional(),
+    publishedDate: zod_1.z.string().nullable().optional(),
     /** 最后完成的阶段 */
     stage: exports.ResourceStageSchema,
     stageUpdatedAt: zod_1.z.string().nullable().optional(),
@@ -286,5 +295,12 @@ exports.DeleteRunResultSchema = zod_1.z
     runId: zod_1.z.string(),
     removedJobs: zod_1.z.number().int(),
     removedEvents: zod_1.z.number().int(),
+})
+    .passthrough();
+/** 审核通过并上线结果（解除 `newAdded`，资源对外可见） */
+exports.PublishResourceResultSchema = zod_1.z
+    .object({
+    ok: zod_1.z.boolean(),
+    resourceId: zod_1.z.string(),
 })
     .passthrough();
